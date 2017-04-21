@@ -50,8 +50,8 @@
     
     public class Program
     {
-        private static readonly string databaseName = "samples";
-        private static readonly string collectionName = "document-samples";
+        private static readonly string databaseName = "NotificationTemplates";
+        private static readonly string collectionName = "PushNotificationTemplates";
 
         // Read config
         private static readonly string endpointUrl = ConfigurationManager.AppSettings["EndPointUrl"];
@@ -64,19 +64,20 @@
         {
             try
             {
-                ConnectionPolicy connectionPolicy = new ConnectionPolicy();
-                connectionPolicy.UserAgentSuffix = " samples-net/3";
-                connectionPolicy.ConnectionMode = ConnectionMode.Direct;
-                connectionPolicy.ConnectionProtocol = Protocol.Tcp;
+				//commented by vijay
+                //ConnectionPolicy connectionPolicy = new ConnectionPolicy();
+                //connectionPolicy.UserAgentSuffix = "vijayagent";
+                //connectionPolicy.ConnectionMode = ConnectionMode.Direct;
+                //connectionPolicy.ConnectionProtocol = Protocol.Tcp;
 
-                // Set the read region selection preference order
-                connectionPolicy.PreferredLocations.Add(LocationNames.EastUS); // first preference
-                connectionPolicy.PreferredLocations.Add(LocationNames.NorthEurope); // second preference
-                connectionPolicy.PreferredLocations.Add(LocationNames.SoutheastAsia); // third preference
+                //// Set the read region selection preference order
+                //connectionPolicy.PreferredLocations.Add(LocationNames.EastUS2); // first preference
+                //connectionPolicy.PreferredLocations.Add(LocationNames.NorthEurope); // second preference
+                //connectionPolicy.PreferredLocations.Add(LocationNames.SoutheastAsia); // third preference
 
-                using (client = new DocumentClient(new Uri(endpointUrl), authorizationKey, connectionPolicy))
+                using (client = new DocumentClient(new Uri(endpointUrl), authorizationKey /* connectionPolicy */))
                 {
-                    Initialize().Wait();
+                    //Initialize().Wait();
 
                     RunDocumentsDemo().Wait();
 
@@ -165,8 +166,8 @@
             // Note that Reads require a partition key to be spcified. This can be skipped if your collection is not
             // partitioned i.e. does not have a partition key definition during creation.
             var response = await client.ReadDocumentAsync(
-                UriFactory.CreateDocumentUri(databaseName, collectionName, "SalesOrder1"), 
-                new RequestOptions { PartitionKey = new PartitionKey("Account1") });
+                UriFactory.CreateDocumentUri(databaseName, collectionName, "SalesOrder1") /*, 
+                new RequestOptions { PartitionKey = new PartitionKey("Account1") }*/);
 
             // You can measure the throughput consumed by any operation by inspecting the RequestCharge property
             Console.WriteLine("Document read by Id {0}", response.Resource);
@@ -265,8 +266,8 @@
         {
             Console.WriteLine("\n1.7 - Deleting a document");
             ResourceResponse<Document> response = await client.DeleteDocumentAsync(
-                UriFactory.CreateDocumentUri(databaseName, collectionName, "SalesOrder3"),
-                new RequestOptions { PartitionKey = new PartitionKey("Account1") });
+                UriFactory.CreateDocumentUri(databaseName, collectionName, "SalesOrder3") /*,
+                new RequestOptions { PartitionKey = new PartitionKey("Account1") } */);
 
             Console.WriteLine("Request charge of delete operation: {0}", response.RequestCharge);
             Console.WriteLine("StatusCode of operation: {0}", response.StatusCode);
@@ -362,8 +363,8 @@
             Console.WriteLine("Request charge of operation: {0}", response.RequestCharge);
 
             response = await client.ReadDocumentAsync(
-                UriFactory.CreateDocumentUri(databaseName, collectionName, "_SalesOrder5"), 
-                new RequestOptions { PartitionKey = new PartitionKey("NewUser01") });
+                UriFactory.CreateDocumentUri(databaseName, collectionName, "_SalesOrder5") /*, 
+                new RequestOptions { PartitionKey = new PartitionKey("NewUser01") } */);
             
             var readDocument = response.Resource;
 
